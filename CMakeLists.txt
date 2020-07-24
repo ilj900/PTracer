@@ -3,7 +3,11 @@ project(PTracer)
 
 set(SOURCE  src/main.cpp
             include/utils.h
-            include/vector3.h)
+            include/vector2.h
+            include/vector3.h
+            include/vector4.h
+            include/triangle.h
+            include/sphere.h)
 
 include_directories(include)
 
