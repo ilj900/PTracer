@@ -7,7 +7,10 @@ set(SOURCE  src/main.cpp
             include/vector3.h
             include/vector4.h
             include/triangle.h
-            include/sphere.h)
+            include/sphere.h
+            include/ray.h
+            include/plane.h
+            include/intersections.h)
 
 include_directories(include)
 

@@ -9,7 +9,7 @@ public:
     Sphere(Vector3 &CenterIn, float RadiusIn): Center(CenterIn), Radius(RadiusIn) {};
     ~Sphere() = default;
 
-private:
+public:
     Vector3 Center;
     float Radius;
 };

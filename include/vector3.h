@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <cmath>
 
 class Vector3
 {
@@ -66,4 +67,31 @@ public:
         Y /= val;
         Z /= val;
     }
+
+    float Len()
+    {
+        return std::sqrt(X * X + Y * Y + Z * Z);
+    }
+
+    float Len2()
+    {
+        return X * X + Y * Y + Z * Z;
+    }
+
+    Vector3 GetNormal()
+    {
+        auto Length = Len();
+        return {X /= Length, Y /= Length,Z /= Length};
+    }
+
+    void Normalize()
+    {
+        auto Length = Len();
+        X /= Length;
+        Y /= Length;
+        Z /= Length;
+    }
 };
+
+using Direction3 = Vector3;
+using ColorRGB = Vector3;
