@@ -9,8 +9,8 @@
 
 int main()
 {
-    std::int32_t Width = 256;
-    std::int32_t Height = 256;
+    std::int32_t Width = 1920;
+    std::int32_t Height = 1080;
     std::int32_t NumberOfChannels = 4;
     std::vector<ColorRGBA> Image(Width * Height);
     FVector3 SphereCenter(1.f, 2.f, 15.f);
@@ -20,10 +20,12 @@ int main()
     FVector3 CameraDirection( 0.f, 0.f, 1.f);
     FVector3 CameraRightDirection(-1.f, 0.f, 0.f);
     FVector3 CameraUpDirection(0.f, 1.f, 0.f);
-    float CameraAngle = 90.f * 3.1415926536f / 180.f;
+    float FOV = 90.f;
+    float VerticalFOV = FOV * 3.1415926536f / 180.f;
+    float HorizontalFOV = VerticalFOV * float(Height) / float(Width);
     float MaxTraceDistance = 100.f;
-    float RayVStep = CameraAngle / float(Height);
-    float RayHStep = CameraAngle / float(Width);
+    float RayVStep = VerticalFOV / float(Width);
+    float RayHStep = HorizontalFOV / float(Height);
     FVector3 CameraFarPoint = CameraCenter + CameraDirection * MaxTraceDistance;
 
     float VerticalCameraAngle = -(RayVStep / 2.f + (Height / 2.f) * RayVStep);

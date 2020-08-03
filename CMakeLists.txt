@@ -13,6 +13,7 @@ set(SOURCE  src/main.cpp
             include/sphere.h
             include/ray.h
             include/plane.h
+            include/camera.h
             include/intersections.h)
 
 include_directories(include)
