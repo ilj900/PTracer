@@ -3,12 +3,12 @@
 #include <iostream>
 #include <string>
 
-class Vector2
+class FVector2
 {
 public:
-    Vector2() = default;
-    Vector2(float X, float Y): Data{X, Y} {};
-    ~Vector2() = default;
+    FVector2() = default;
+    FVector2(float X, float Y): Data{X, Y} {};
+    ~FVector2() = default;
 
     std::string GetStringRepresentation() {return "X: " + std::to_string(X) + " Y: " + std::to_string(Y);};
 
@@ -19,33 +19,33 @@ public:
         struct {float U, V;};
     };
 
-    Vector2 operator+(const Vector2& val)
+    FVector2 operator+(const FVector2& val)
     {
-        return Vector2{X + val.X, Y + val.Y};
+        return FVector2{X + val.X, Y + val.Y};
     }
 
-    Vector2 operator-(const Vector2& val)
+    FVector2 operator-(const FVector2& val)
     {
-        return Vector2{X - val.X, Y - val.Y};
+        return FVector2{X - val.X, Y - val.Y};
     }
 
-    Vector2 operator*(float val)
+    FVector2 operator*(float val)
     {
         return {X * val, Y * val};
     }
 
-    Vector2 operator/(float val)
+    FVector2 operator/(float val)
     {
         return {X / val, Y / val};
     }
 
-    void operator+=(const Vector2& val)
+    void operator+=(const FVector2& val)
     {
         X += val.X;
         Y += val.Y;
     }
 
-    void operator-=(const Vector2& val)
+    void operator-=(const FVector2& val)
     {
         X -= val.X;
         Y -= val.Y;
@@ -63,3 +63,5 @@ public:
         Y /= val;
     }
 };
+
+using TextureCoordinates = FVector2;

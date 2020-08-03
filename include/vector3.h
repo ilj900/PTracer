@@ -4,12 +4,12 @@
 #include <string>
 #include <cmath>
 
-class Vector3
+class FVector3
 {
 public:
-    Vector3() = default;
-    Vector3(float X, float Y, float Z): Data{X, Y ,Z} {};
-    ~Vector3() = default;
+    FVector3() = default;
+    FVector3(float X, float Y, float Z): Data{X, Y , Z} {};
+    ~FVector3() = default;
 
     std::string GetStringRepresentation() {return "X: " + std::to_string(X) + " Y: " + std::to_string(Y) + " Z: " + std::to_string(Z);};
 
@@ -20,34 +20,34 @@ public:
         struct {float R, G, B;};
     };
 
-    Vector3 operator+(const Vector3& val)
+    FVector3 operator+(const FVector3& val)
     {
-        return Vector3{X + val.X, Y + val.Y, Z + val.Z};
+        return FVector3{X + val.X, Y + val.Y, Z + val.Z};
     }
 
-    Vector3 operator-(const Vector3& val)
+    FVector3 operator-(const FVector3& val)
     {
-        return Vector3{X - val.X, Y - val.Y, Z - val.Z};
+        return FVector3{X - val.X, Y - val.Y, Z - val.Z};
     }
 
-    Vector3 operator*(float val)
+    FVector3 operator*(float val)
     {
         return {X * val, Y * val, Z * val};
     }
 
-    Vector3 operator/(float val)
+    FVector3 operator/(float val)
     {
         return {X / val, Y / val, Z / val};
     }
 
-    void operator+=(const Vector3& val)
+    void operator+=(const FVector3& val)
     {
         X += val.X;
         Y += val.Y;
         Z += val.Z;
     }
 
-    void operator-=(const Vector3& val)
+    void operator-=(const FVector3& val)
     {
         X -= val.X;
         Y -= val.Y;
@@ -78,7 +78,7 @@ public:
         return X * X + Y * Y + Z * Z;
     }
 
-    Vector3 GetNormal()
+    FVector3 GetNormal()
     {
         auto Length = Len();
         return {X /= Length, Y /= Length,Z /= Length};
@@ -93,5 +93,4 @@ public:
     }
 };
 
-using Direction3 = Vector3;
-using ColorRGB = Vector3;
+using Direction3 = FVector3;

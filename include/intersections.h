@@ -1,14 +1,13 @@
 #pragma once
 
-#include "ray.h"
-#include "sphere.h"
+#include <vector3.h>
 
-float Dot(Vector3& VecA, Vector3& VecB)
+float Dot(FVector3& VecA, FVector3& VecB)
 {
     return VecA.X * VecB.X + VecA.Y * VecB.Y + VecA.Z * VecB.Z;
 }
 
-float GetAngle(Vector3 VecA, Vector3 VecB)
+float GetAngle(FVector3 VecA, FVector3 VecB)
 {
     VecA.Normalize();
     VecB.Normalize();
@@ -54,22 +53,22 @@ bool GetSmallestNonNegative(float A, float B, float& Result)
 
 }
 
-bool RaySphereIntersection(Ray& RayIn, Sphere& SphereIn)
-{
-    // Translate Ray into sphere center coordinates
-    auto RayOrigin = RayIn.Origin - SphereIn.Center;
-    auto A = RayIn.Direction.Len2();
-    auto B = 2.f * (Dot(RayOrigin, RayIn.Direction));
-    auto C = RayOrigin.Len2() - SphereIn.Radius * SphereIn.Radius;
-    float X1, X2;
-    if (SolveQuadratic(A, B, C, X1, X2))
-    {
-//        float X;
-//        if (!GetSmallestNonNegative(X1, X2, X))
-//        {
-//            return false;
-//        }
-    return true;
-    }
-    return false;
-}
+//bool RaySphereIntersection(FRay& RayIn, FSphere& SphereIn)
+//{
+//    // Translate Ray into sphere center coordinates
+//    auto RayOrigin = RayIn.Origin - SphereIn.Center;
+//    auto A = RayIn.Direction.Len2();
+//    auto B = 2.f * (Dot(RayOrigin, RayIn.Direction));
+//    auto C = RayOrigin.Len2() - SphereIn.Radius * SphereIn.Radius;
+//    float X1, X2;
+//    if (SolveQuadratic(A, B, C, X1, X2))
+//    {
+////        float X;
+////        if (!GetSmallestNonNegative(X1, X2, X))
+////        {
+////            return false;
+////        }
+//    return true;
+//    }
+//    return false;
+//}

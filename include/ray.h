@@ -2,16 +2,16 @@
 
 #include "vector3.h"
 
-static Vector3 DefaultOrigin = {0.f, 0.f, 0.f};
+static FVector3 DefaultOrigin = {0.f, 0.f, 0.f};
+static FVector3 DefaultDirection = {1.f, 0.f, 0.f};
 
-class Ray
+class FRay
 {
 public:
-    Ray() = default;
-    Ray(Vector3 &DirectionIn, Vector3 &OriginIn = DefaultOrigin): Direction(DirectionIn), Origin(OriginIn) {};
-    ~Ray() = default;
+    FRay(FVector3 &OriginIn = DefaultOrigin, FVector3 &DirectionIn = DefaultDirection): Direction(DirectionIn), Origin(OriginIn) {};
+    ~FRay() = default;
 
 public:
-    Vector3 Direction = {1.f, 0.f, 0.f};
-    Vector3 Origin = DefaultOrigin;
+    FVector3 Direction = {1.f, 0.f, 0.f};
+    FVector3 Origin = DefaultOrigin;
 };

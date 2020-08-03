@@ -4,9 +4,11 @@ project(PTracer)
 set(SOURCE  src/main.cpp
             src/stb_image_write.cpp
             include/utils.h
+            include/vector2.h
             include/vector3.h
-            include/stb_image_write.h
             include/vector4.h
+            include/stb_image_write.h
+            include/shape.h
             include/triangle.h
             include/sphere.h
             include/ray.h
