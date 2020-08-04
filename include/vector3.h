@@ -20,52 +20,62 @@ public:
         struct {float R, G, B;};
     };
 
-    FVector3 operator+(const FVector3& val)
+    FVector3 operator+(const FVector3& Val)
     {
-        return FVector3{X + val.X, Y + val.Y, Z + val.Z};
+        return FVector3{X + Val.X, Y + Val.Y, Z + Val.Z};
     }
 
-    FVector3 operator-(const FVector3& val)
+    FVector3 operator-(const FVector3& Val)
     {
-        return FVector3{X - val.X, Y - val.Y, Z - val.Z};
+        return FVector3{X - Val.X, Y - Val.Y, Z - Val.Z};
     }
 
-    FVector3 operator*(float val)
+    FVector3 operator*(float Val)
     {
-        return {X * val, Y * val, Z * val};
+        return {X * Val, Y * Val, Z * Val};
     }
 
-    FVector3 operator/(float val)
+    float operator*(FVector3& Val)
     {
-        return {X / val, Y / val, Z / val};
+        return X * Val.X + Y * Val.Y + Z * Val.Z;
     }
 
-    void operator+=(const FVector3& val)
+    FVector3 operator/(float Val)
     {
-        X += val.X;
-        Y += val.Y;
-        Z += val.Z;
+        return {X / Val, Y / Val, Z / Val};
     }
 
-    void operator-=(const FVector3& val)
+    void operator+=(const FVector3& Val)
     {
-        X -= val.X;
-        Y -= val.Y;
-        Z -= val.Z;
+        X += Val.X;
+        Y += Val.Y;
+        Z += Val.Z;
     }
 
-    void operator*=(float val)
+    FVector3 operator-()
     {
-        X *= val;
-        Y *= val;
-        Z *= val;
+        return {-X, -Y, -Z};
     }
 
-    void operator/=(float val)
+    void operator-=(const FVector3& Val)
     {
-        X /= val;
-        Y /= val;
-        Z /= val;
+        X -= Val.X;
+        Y -= Val.Y;
+        Z -= Val.Z;
+    }
+
+    void operator*=(float Val)
+    {
+        X *= Val;
+        Y *= Val;
+        Z *= Val;
+    }
+
+    void operator/=(float Val)
+    {
+        X /= Val;
+        Y /= Val;
+        Z /= Val;
     }
 
     float Len()

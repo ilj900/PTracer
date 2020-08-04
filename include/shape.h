@@ -5,8 +5,8 @@
 class FShape
 {
 public:
-    FShape() = default;
-    ~FShape() = default;
+    virtual bool Intersect(FRay RayIn, FRay& RayOut) = 0;
 
-    virtual bool Intersect(FRay& RayIn, FRay* RayOut = nullptr) = 0;
+public:
+    ColorRGBA Albedo;
 };

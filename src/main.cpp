@@ -40,18 +40,20 @@ int main()
             auto RayDirection = CameraFarPoint + Offset * MaxTraceDistance;
             FRay Ray(CameraCenter, RayDirection);
             FRay RayOut;
-            if (Sphere.Intersect(Ray, &RayOut))
+            if (Sphere.Intersect(Ray, RayOut))
             {
-                Image[i * Width + j].R = 255;
+                auto Angle = GetAngle(Ray.Direction, RayOut.Direction) / 3.1415926;
+                std::uint8_t AdjustedColor = std::uint8_t(255.f * Angle);
+                Image[i * Width + j].R = AdjustedColor;
                 Image[i * Width + j].G = 0;
                 Image[i * Width + j].B = 0;
                 Image[i * Width + j].A = 255;
             }
             else
             {
-                Image[i * Width + j].R = 0;
-                Image[i * Width + j].G = 255;
-                Image[i * Width + j].B = 0;
+                Image[i * Width + j].R = 20;
+                Image[i * Width + j].G = 15;
+                Image[i * Width + j].B = 40;
                 Image[i * Width + j].A = 255;
             }
         }

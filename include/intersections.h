@@ -7,11 +7,18 @@ float Dot(FVector3& VecA, FVector3& VecB)
     return VecA.X * VecB.X + VecA.Y * VecB.Y + VecA.Z * VecB.Z;
 }
 
+float GetCos(FVector3 VecA, FVector3 VecB)
+{
+    VecA.Normalize();
+    VecB.Normalize();
+    return Dot(VecA, VecB);
+}
+
 float GetAngle(FVector3 VecA, FVector3 VecB)
 {
     VecA.Normalize();
     VecB.Normalize();
-    return (Dot(VecA, VecB));
+    return std::acos(Dot(VecA, VecB));
 }
 
 bool SolveQuadratic(float A, float B, float C, float& X1, float& X2)

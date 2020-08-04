@@ -2,6 +2,7 @@
 
 #include "shape.h"
 #include "intersections.h"
+#include "linmath.h"
 
 class FSphere: public FShape
 {
@@ -13,7 +14,7 @@ public:
 public:
     FVector3 Center;
     float Radius;
-    virtual bool Intersect(FRay& RayIn, FRay* RayOut = nullptr) override
+    virtual bool Intersect(FRay RayIn, FRay& RayOut) override
     {
         // Translate Ray into sphere center coordinates
         auto RayOrigin = RayIn.Origin - Center;
@@ -23,7 +24,15 @@ public:
         float X1, X2;
         if (SolveQuadratic(A, B, C, X1, X2))
         {
-            return true;
+            float X;
+            if (GetSmallestNonNegative(X1, X2, X))
+            {
+                auto IntersectedRay = RayIn.Origin + RayIn.Direction * X;
+                auto Normal = IntersectedRay - Center;
+                auto ReflectedRayDirection = Reflect(-IntersectedRay, Normal);
+                RayOut = FRay(IntersectedRay, ReflectedRayDirection);
+                return true;
+            }
         }
         return false;
     }
