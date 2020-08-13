@@ -7,6 +7,7 @@ set(SOURCE  src/main.cpp
             include/vector2.h
             include/vector3.h
             include/vector4.h
+            include/image.h
             include/stb_image_write.h
             include/shape.h
             include/triangle.h

@@ -1,7 +1,7 @@
 #include "stb_image_write.h"
-#include "vector4.h"
 #include "utils.h"
 #include "sphere.h"
+#include "camera.h"
 
 #include <vector>
 #include <cstdint>
@@ -9,55 +9,41 @@
 
 int main()
 {
-    std::int32_t Width = 1920;
-    std::int32_t Height = 1080;
-    std::int32_t NumberOfChannels = 4;
-    std::vector<ColorRGBA> Image(Width * Height);
-    FVector3 SphereCenter(1.f, 2.f, 15.f);
+    std::uint32_t Width = 1920;
+    std::uint32_t Height = 1080;
+    std::uint32_t NumberOfChannels = 4;
+    FVector3 SphereCenter(4.f, 4.f, 10.f);
     FSphere Sphere(SphereCenter, 2.f);
 
-    FVector3 CameraCenter(0.f, 0.f, -1.f);
+    UImage Image(Width, Height);
+    FVector3 CameraCenter(0.f, 0.f, -10.f);
     FVector3 CameraDirection( 0.f, 0.f, 1.f);
-    FVector3 CameraRightDirection(-1.f, 0.f, 0.f);
-    FVector3 CameraUpDirection(0.f, 1.f, 0.f);
-    float FOV = 90.f;
-    float VerticalFOV = FOV * 3.1415926536f / 180.f;
-    float HorizontalFOV = VerticalFOV * float(Height) / float(Width);
-    float MaxTraceDistance = 100.f;
-    float RayVStep = VerticalFOV / float(Width);
-    float RayHStep = HorizontalFOV / float(Height);
-    FVector3 CameraFarPoint = CameraCenter + CameraDirection * MaxTraceDistance;
+    Camera Cam(CameraCenter, CameraDirection, 90.f, 100.f, 0.1f, Image);
 
-    float VerticalCameraAngle = -(RayVStep / 2.f + (Height / 2.f) * RayVStep);
-    for (std::int32_t i = 0; i < Height; ++i, VerticalCameraAngle += RayVStep)
+    for (std::uint32_t Y = 0; Y < Height; ++Y)
     {
-        FVector3 VerticalOffset = CameraRightDirection * std::tan(VerticalCameraAngle);
-        float HorizontalCameraAngle = -(RayHStep / 2.f + (Width / 2.f) * RayHStep);
-        for (std::int32_t j = 0; j < Width; ++j, HorizontalCameraAngle += RayHStep)
+        for (std::uint32_t X = 0; X < Width; ++X)
         {
-            FVector3 HorizontalOffset = CameraUpDirection * std::tan(HorizontalCameraAngle);
-            auto Offset = VerticalOffset + HorizontalOffset;
-            auto RayDirection = CameraFarPoint + Offset * MaxTraceDistance;
-            FRay Ray(CameraCenter, RayDirection);
+            FRay Ray = Cam.GenerateRay(X, Y);
             FRay RayOut;
             if (Sphere.Intersect(Ray, RayOut))
             {
                 auto Angle = GetAngle(Ray.Direction, RayOut.Direction) / 3.1415926;
                 std::uint8_t AdjustedColor = std::uint8_t(255.f * Angle);
-                Image[i * Width + j].R = AdjustedColor;
-                Image[i * Width + j].G = 0;
-                Image[i * Width + j].B = 0;
-                Image[i * Width + j].A = 255;
+                Image[Y * Width + X].R = AdjustedColor;
+                Image[Y * Width + X].G = 0;
+                Image[Y * Width + X].B = 0;
+                Image[Y * Width + X].A = 255;
             }
             else
             {
-                Image[i * Width + j].R = 20;
-                Image[i * Width + j].G = 15;
-                Image[i * Width + j].B = 40;
-                Image[i * Width + j].A = 255;
+                Image[Y * Width + X].R = 20;
+                Image[Y * Width + X].G = 15;
+                Image[Y * Width + X].B = 40;
+                Image[Y * Width + X].A = 255;
             }
         }
     }
-    stbi_write_png("Test.png", Width, Height, NumberOfChannels, Image.data(), 0);
+    stbi_write_png("Test.png", Width, Height, NumberOfChannels, Image.GetData(), 0);
     return 0;
 }
