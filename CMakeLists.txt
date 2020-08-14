@@ -15,8 +15,9 @@ set(SOURCE  src/main.cpp
             include/ray.h
             include/plane.h
             include/camera.h
+            include/point_light.h
             include/linmath.h
-            include/intersections.h)
+            include/randomizer.h)
 
 include_directories(include)
 
