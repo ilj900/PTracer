@@ -13,6 +13,7 @@ set(SOURCE  src/main.cpp
             include/triangle.h
             include/sphere.h
             include/ray.h
+            include/timing.h
             include/plane.h
             include/camera.h
             include/point_light.h

@@ -30,14 +30,6 @@ public:
 
     FRay GenerateRay(float X, float Y)
     {
-        if (X <= 0.f || X >= 1919.f)
-        {
-            X = X;
-        }
-        if (Y <= 0.f || Y >= 1079.f)
-        {
-            Y = Y;
-        }
         FRay Ray;
         Ray.Origin = CameraCenter;
         FVector3 End = TopLeftPoint;
