@@ -7,7 +7,14 @@
 class UImage
 {
 public:
-    UImage(std::uint32_t WidthIn, std::uint32_t HeightIn, ColorRGBA DefaaultColor = {0, 0, 0, 0}): Width(WidthIn), Height(HeightIn) {Data.resize(Width*Height, DefaaultColor);};
+    UImage(std::uint32_t WidthIn, std::uint32_t HeightIn, ColorRGBA DefaaultColor = {0, 0, 0, 0}): Width(WidthIn), Height(HeightIn)
+    {
+        if (WidthIn % 2 != 0 || HeightIn % 2 != 0)
+        {
+            throw std::exception("UImage doesn't support odd size");
+        }
+        Data.resize(Width*Height, DefaaultColor);
+    };
     inline std::uint32_t GetWidth() {return Width;};
     inline std::uint32_t GetHeight() {return Height;};
     ColorRGBA& operator[](std::uint32_t index) {return Data[index];};

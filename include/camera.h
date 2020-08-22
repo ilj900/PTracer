@@ -5,39 +5,82 @@
 #include "ray.h"
 #include "linmath.h"
 
+#define MY_PI 3.14159265359f
+#define MY_RADIAN 57.2957795131f
 class Camera
 {
 public:
     Camera(FVector3& CameraCenter, Direction3& CameraDirection, float FOV, float FarDistance, float NearDistance, UImage& ImageIn):
-        CameraCenter(CameraCenter), CameraDirection(CameraDirection), HFOV(FOV), FarDistance(FarDistance), NearDistance(NearDistance), Image(ImageIn)
+        CameraCenter(CameraCenter), CameraDirection(CameraDirection), HFOV(FOV / MY_RADIAN), FarDistance(FarDistance), NearDistance(NearDistance), Image(ImageIn)
         {
-        VFOV = HFOV * Image.GetHeight() / Image.GetWidth();
+        AspectRate = float(ImageIn.GetHeight()) / float(ImageIn.GetWidth());
+        VFOV = HFOV * AspectRate;
+        CameraDirection.Normalize();
         NearPlaneCenterPoint = CameraCenter + CameraDirection * NearDistance;
         FarPlaneCenterPoint = CameraCenter + CameraDirection * FarDistance;
-        CameraDirection.Normalize();
         CameraRight = Cross(FVector3{0.f, 1.f, 0.f}, CameraDirection);
         CameraUp = Cross(CameraDirection, CameraRight);
-        AspectRate = float(ImageIn.GetHeight()) / float(ImageIn.GetWidth());
-        float FarPlaneWidth = FarDistance * 2.f * std::tan(HFOV * 0.5f * 3.1415926536f / 180.f);
-        float FarPlaneHeight = FarPlaneWidth * AspectRate;
-        HStep = FarPlaneWidth / Image.GetWidth();
-        VStep = FarPlaneHeight / Image.GetHeight();
-
-        TopLeftPoint = FarPlaneCenterPoint - (CameraRight * (FarPlaneWidth * 0.5f));
-        TopLeftPoint += CameraUp * (FarPlaneHeight * 0.5f);
+        HalfImageWidth = Image.GetWidth() / 2;
+        HalfImageHeight = Image.GetHeight() / 2;
+        GenerateTangentValues();
         };
     ~Camera() = default;
 
-    FRay GenerateRay(float X, float Y)
+    FRay GenerateRay(std::uint32_t X, std::uint32_t Y)
     {
         FRay Ray;
         Ray.Origin = CameraCenter;
-        FVector3 End = TopLeftPoint;
-        End += CameraRight * X * HStep;
-        End -= CameraUp * Y * VStep;
+        FVector3 End = FarPlaneCenterPoint;
+        if (X >= Image.GetWidth() || Y >= Image.GetHeight())
+        {
+            throw std::exception("GenerateRay failed cause passed X value is greater that image width");
+        }
+
+        if (X < HalfImageWidth)
+        {
+            End -= CameraRight * TangentValues[HalfImageWidth - X - 1];
+        }
+        else
+        {
+            End += CameraRight * TangentValues[X - HalfImageWidth];
+        }
+        if (Y < HalfImageHeight)
+        {
+            End += CameraUp * TangentValues[HalfImageHeight - Y - 1];
+        }
+        else
+        {
+            End -= CameraUp * TangentValues[Y - HalfImageHeight];
+        }
         Ray.Direction = End - Ray.Origin;
         return Ray;
     };
+
+    void GenerateTangentValues()
+    {
+        float HalfAngle;
+        std::uint32_t HalfSize;
+        if (HalfImageWidth > HalfImageHeight)
+        {
+            HalfSize = HalfImageWidth;
+            HalfAngle = HFOV / 2.f;
+        }
+        else
+        {
+            HalfSize = Image.GetHeight() / 2;
+            HalfAngle = VFOV / 2.f;
+        }
+        auto AngleStep = HalfAngle / HalfSize;
+        auto Angle = AngleStep * 0.5f;
+        TangentValues.resize(HalfSize);
+        for (auto i = 0u; i < HalfSize; ++i)
+        {
+            TangentValues[i] = std::tan(Angle) * FarDistance;
+            Angle += AngleStep;
+        }
+    }
+
+    void Render() {};
 
 private:
     FVector3 CameraCenter;
@@ -54,5 +97,8 @@ private:
     float HStep;
     float VStep;
     FVector3 TopLeftPoint;
+    std::vector<float> TangentValues;
     UImage& Image;
+    std::uint32_t HalfImageWidth;
+    std::uint32_t HalfImageHeight;
 };

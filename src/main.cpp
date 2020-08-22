@@ -24,14 +24,15 @@ int main()
 
     {
         Timer tm2;
-        for (std::uint32_t Y = 0; Y < Height; ++Y) {
-            for (std::uint32_t X = 0; X < Width; ++X) {
-                FRay Ray = Cam.GenerateRay(X, Y);
+
+        for (std::uint32_t Y = 0; Y < Height; ++Y)
+        {
+            for (std::uint32_t X = 0; X < Width; ++X)
+            {
                 FRay RayOut;
+                FRay Ray = Cam.GenerateRay(X, Y);
                 for (auto item : Shapes) {
                     if (item->Intersect(Ray, RayOut)) {
-                        auto Angle = GetAngle(Ray.Direction, RayOut.Direction) / 3.1415926;
-                        std::uint8_t AdjustedColor = std::uint8_t(255.f * Angle);
                         Image[Y * Width + X] = item->Albedo;
                     }
                 }
