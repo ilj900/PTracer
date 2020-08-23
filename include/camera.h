@@ -13,8 +13,8 @@ public:
     Camera(FVector3& CameraCenter, Direction3& CameraDirection, float FOV, float FarDistance, float NearDistance, UImage& ImageIn):
         CameraCenter(CameraCenter), CameraDirection(CameraDirection), HFOV(FOV / MY_RADIAN), FarDistance(FarDistance), NearDistance(NearDistance), Image(ImageIn)
         {
-        AspectRate = float(ImageIn.GetWidth()) / float(ImageIn.GetHeight());
-        VFOV = std::atan(std::tan(HFOV * 0.5f) * AspectRate);
+        AspectRate = float(ImageIn.GetHeight()) / float(ImageIn.GetWidth());
+        VFOV = std::atan(std::tan(HFOV * 0.5f) * AspectRate) * 2.f;
         CameraDirection.Normalize();
         NearPlaneCenterPoint = CameraCenter + CameraDirection * NearDistance;
         FarPlaneCenterPoint = CameraCenter + CameraDirection * FarDistance;
