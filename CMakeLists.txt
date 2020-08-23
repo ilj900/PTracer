@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.14)
 project(PTracer)
 
+set(CMAKE_CXX_STANDARD 14)
+
+include_directories(include)
+
 set(SOURCE  src/main.cpp
             src/stb_image_write.cpp
             include/utils.h
@@ -19,9 +23,5 @@ set(SOURCE  src/main.cpp
             include/point_light.h
             include/linmath.h
             include/randomizer.h)
-
-include_directories(include)
-
-set(CMAKE_CXX_STANDARD 14)
 
 add_executable(PTracer ${SOURCE})

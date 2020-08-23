@@ -1,4 +1,3 @@
-#include "stb_image_write.h"
 #include "utils.h"
 #include "sphere.h"
 #include "camera.h"
@@ -39,6 +38,9 @@ int main()
             }
         }
     }
-    stbi_write_png("Test.png", Width, Height, NumberOfChannels, Image.GetData(), 0);
+    if (!Image.SaveImage("Test.png"))
+    {
+        return 1;
+    }
     return 0;
 }
