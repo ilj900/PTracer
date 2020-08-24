@@ -11,8 +11,6 @@ public:
     FSphere(FVector3& PositionIn, ColorRGBA& AlbedoIn, float RadiusIn): FShape(PositionIn, AlbedoIn), Radius(RadiusIn) {};
     ~FSphere() = default;
 
-public:
-    float Radius;
     virtual bool Intersect(FRay RayIn, FRay& RayOut) override
     {
         // Translate Ray into sphere center coordinates
@@ -39,4 +37,7 @@ public:
         }
         return false;
     }
+
+public:
+    float Radius;
 };

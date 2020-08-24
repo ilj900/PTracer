@@ -1,5 +1,6 @@
 #include "utils.h"
 #include "sphere.h"
+#include "triangle.h"
 #include "camera.h"
 #include "timing.h"
 
@@ -12,9 +13,10 @@ int main()
     std::uint32_t Height = 1080;
     std::uint32_t NumberOfChannels = 4;
     std::vector<FShape*> Shapes{new FSphere{{4.f, 4.f, 10.f}, {255, 0, 0, 255}, 2.f},
-                                new FSphere{{5.f, 7.f, 6.f}, {0, 128, 192, 255}, 3.f},
+                                new FSphere{{18.f, 7.f, 12.f}, {0, 128, 192, 255}, 3.f},
                                 new FSphere{{-3.f, 0.f, 25.f}, {0, 255, 0, 255}, 2.f},
-                                new FSphere{{-90.f, -45.f, 120.f}, {255, 0, 128, 255}, 10.f}};
+                                new FSphere{{-90.f, -45.f, 120.f}, {255, 0, 128, 255}, 10.f},
+                                new FTriangle{{0.f, 0.f, 10.f}, {255, 255, 0, 255}, {0.f, 3.f, 10.f}, {-3.f, 0.f, 10.f}, {0.f, 0.f, 10.0f}}};
 
     UImage Image(Width, Height, {20, 15, 40, 255});
     FVector3 CameraCenter(0.f, 0.f, -10.f);
