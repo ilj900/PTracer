@@ -3,7 +3,11 @@ project(PTracer)
 
 set(CMAKE_CXX_STANDARD 14)
 
-include_directories(include)
+add_subdirectory(glad)
+
+include_directories(include
+        glad/include)
+link_directories(libs)
 
 set(SOURCE  src/main.cpp
             src/stb_image_write.cpp
@@ -22,6 +26,9 @@ set(SOURCE  src/main.cpp
             include/camera.h
             include/point_light.h
             include/linmath.h
-            include/randomizer.h)
+            include/randomizer.h
+            include/draw_manager.h src/draw_manager.cpp)
 
 add_executable(PTracer ${SOURCE})
+
+target_link_libraries(PTracer glfw3 glad)

@@ -5,6 +5,7 @@
 
 #include <cinttypes>
 #include <vector>
+#include <string>
 
 class UImage
 {

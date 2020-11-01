@@ -3,8 +3,18 @@
 #include "triangle.h"
 #include "camera.h"
 #include "timing.h"
+#include "draw_manager.h"
+
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
 
 #include <cstdint>
+
+static void KeyCallback(GLFWwindow* Window, int Key, int Scancode, int Action, int Mods)
+{
+    if (Key == GLFW_KEY_ESCAPE && Action == GLFW_PRESS)
+        glfwSetWindowShouldClose(Window, GL_TRUE);
+}
 
 int main()
 {
@@ -40,9 +50,45 @@ int main()
             }
         }
     }
-    if (!Image.SaveImage("Test.png"))
+
+    GLFWwindow* window;
+
     {
-        return 1;
+        if (!glfwInit())
+            return -1;
+
+        glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+        window = glfwCreateWindow(Image.GetWidth(), Image.GetHeight(), "", NULL, NULL);
+        glfwSetWindowPos(window, 100, 100);
+
+        if (!window) {
+            glfwTerminate();
+            return -1;
+        }
+
+        glfwSetKeyCallback(window, KeyCallback);
+
+        glfwMakeContextCurrent(window);
     }
+
+    {
+        if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
+            std::cout << "Failed to initialize OpenGL context" << std::endl;
+            return -1;
+        }
+    }
+
+    DrawManager DM(&Image);
+
+    while (!glfwWindowShouldClose(window))
+    {
+        glClear(GL_COLOR_BUFFER_BIT);
+        DM.Use();
+        DM.Draw();
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    glfwTerminate();
     return 0;
 }
