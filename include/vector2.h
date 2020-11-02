@@ -1,16 +1,20 @@
 #pragma once
 
+#include "utils.h"
+
 #include <iostream>
+#include <stdexcept>
 #include <string>
 
 class FVector2
 {
 public:
-    FVector2() = default;
+    FVector2(): Data{0.f, 0.f} {};
     FVector2(float X, float Y): Data{X, Y} {};
+    FVector2(const FVector2& Vec) : Data{Vec.X, Vec.Y} {};
     ~FVector2() = default;
 
-    std::string GetStringRepresentation() {return "X: " + std::to_string(X) + " Y: " + std::to_string(Y);};
+    std::string ToString() {return "X: " + std::to_string(X) + " Y: " + std::to_string(Y);};
 
 public:
     union {
@@ -19,49 +23,90 @@ public:
         struct {float U, V;};
     };
 
-    FVector2 operator+(const FVector2& val)
+    inline FVector2 operator+(const FVector2& Value)
     {
-        return FVector2{X + val.X, Y + val.Y};
+        return FVector2{X + Value.X, Y + Value.Y};
     }
 
-    FVector2 operator-(const FVector2& val)
+    inline FVector2 operator-(const FVector2& Value)
     {
-        return FVector2{X - val.X, Y - val.Y};
+        return FVector2{X - Value.X, Y - Value.Y};
     }
 
-    FVector2 operator*(float val)
+    inline FVector2 operator-()
     {
-        return {X * val, Y * val};
+        return FVector2(-X, -Y);
     }
 
-    FVector2 operator/(float val)
+    inline FVector2 operator*(float Value)
     {
-        return {X / val, Y / val};
+        return {X * Value, Y * Value};
     }
 
-    void operator+=(const FVector2& val)
+    inline FVector2 operator/(float Value)
     {
-        X += val.X;
-        Y += val.Y;
+        float Inversed = 1.f / CHECK_NOT_ZERO(Value, "FVector2::Division_by_zero.");
+        return {X * Inversed, Y * Inversed};
     }
 
-    void operator-=(const FVector2& val)
+    inline void operator+=(const FVector2& Value)
     {
-        X -= val.X;
-        Y -= val.Y;
+        X += Value.X;
+        Y += Value.Y;
     }
 
-    void operator*=(float val)
+    inline void operator-=(const FVector2& Value)
     {
-        X *= val;
-        Y *= val;
+        X -= Value.X;
+        Y -= Value.Y;
     }
 
-    void operator/=(float val)
+    inline void operator*=(float Value)
     {
-        X /= val;
-        Y /= val;
+        X *= Value;
+        Y *= Value;
+    }
+
+    inline void operator/=(float Value)
+    {
+        float Inversed = 1.f / CHECK_NOT_ZERO(Value, "FVector2::Division_by_zero.");
+        X *= Inversed;
+        Y *= Inversed;
+    }
+
+    inline float operator*(const FVector2& Vector)
+    {
+        return Vector.X * X + Vector.Y * Y;
+    }
+
+    inline float Len()
+    {
+        return std::sqrt(X * X + Y * Y);
+    }
+
+    inline float Len2()
+    {
+        return X * X + Y * Y;
+    }
+
+    inline FVector2 Normal()
+    {
+        auto InversedLength = 1.f / CHECK_NOT_ZERO(Len(), "FVector2::Length_is_zero.");
+        return FVector2{X * InversedLength, Y * InversedLength};
+    }
+
+    inline void  Normalize()
+    {
+        auto InversedLength = 1.f / CHECK_NOT_ZERO(Len(), "FVector2::Length_is_zero.");
+        X *= InversedLength;
+        Y *= InversedLength;
     }
 };
+
+inline std::ostream& operator<<(std::ostream& OutputStream, const FVector2& Vec)
+{
+    OutputStream << "X: " << Vec.X << " Y: " << Vec.Y << std::endl;
+    return OutputStream;
+}
 
 using TextureCoordinates = FVector2;

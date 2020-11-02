@@ -27,7 +27,13 @@ set(SOURCE  src/main.cpp
             include/point_light.h
             include/linmath.h
             include/randomizer.h
-            include/draw_manager.h src/draw_manager.cpp)
+            include/draw_manager.h
+            src/draw_manager.cpp
+            include/matrix2.h
+            include/constants.h
+            include/matrix3.h
+            include/matrix4.h
+            include/transformation.h)
 
 add_executable(PTracer ${SOURCE})
 

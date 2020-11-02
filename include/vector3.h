@@ -1,5 +1,7 @@
 #pragma once
 
+#include "utils.h"
+
 #include <iostream>
 #include <string>
 #include <cmath>
@@ -7,8 +9,9 @@
 class FVector3
 {
 public:
-    FVector3() = default;
+    FVector3(): X(0.f), Y(0.f), Z(0.f) {};
     FVector3(float X, float Y, float Z): Data{X, Y , Z} {};
+    FVector3(const FVector3& Vec) : Data{Vec.X, Vec.Y, Vec.Z} {};
     ~FVector3() = default;
 
     std::string GetStringRepresentation() {return "X: " + std::to_string(X) + " Y: " + std::to_string(Y) + " Z: " + std::to_string(Z);};
@@ -20,87 +23,95 @@ public:
         struct {float R, G, B;};
     };
 
-    FVector3 operator+(const FVector3& Val)
+    inline FVector3 operator+(const FVector3& Value)
     {
-        return FVector3{X + Val.X, Y + Val.Y, Z + Val.Z};
+        return FVector3{X + Value.X, Y + Value.Y, Z + Value.Z};
     }
 
-    FVector3 operator-(const FVector3& Val)
+    inline FVector3 operator-(const FVector3& Value)
     {
-        return FVector3{X - Val.X, Y - Val.Y, Z - Val.Z};
+        return FVector3{X - Value.X, Y - Value.Y, Z - Value.Z};
     }
 
-    FVector3 operator*(float Val)
+    inline FVector3 operator*(float Value)
     {
-        return {X * Val, Y * Val, Z * Val};
+        return {X * Value, Y * Value, Z * Value};
     }
 
-    float operator*(FVector3& Val)
+    inline FVector3 operator/(float Value)
     {
-        return X * Val.X + Y * Val.Y + Z * Val.Z;
+        float Inversed = 1.f / CHECK_NOT_ZERO(Value, "FVector3::Division_by_zero.");
+        return {X * Inversed, Y * Inversed, Z * Inversed};
     }
 
-    FVector3 operator/(float Val)
+    inline void operator+=(const FVector3& Value)
     {
-        return {X / Val, Y / Val, Z / Val};
+        X += Value.X;
+        Y += Value.Y;
+        Z += Value.Z;
     }
 
-    void operator+=(const FVector3& Val)
-    {
-        X += Val.X;
-        Y += Val.Y;
-        Z += Val.Z;
-    }
-
-    FVector3 operator-()
+    inline FVector3 operator-()
     {
         return {-X, -Y, -Z};
     }
 
-    void operator-=(const FVector3& Val)
+    inline void operator-=(const FVector3& Value)
     {
-        X -= Val.X;
-        Y -= Val.Y;
-        Z -= Val.Z;
+        X -= Value.X;
+        Y -= Value.Y;
+        Z -= Value.Z;
     }
 
-    void operator*=(float Val)
+    inline void operator*=(float Value)
     {
-        X *= Val;
-        Y *= Val;
-        Z *= Val;
+        X *= Value;
+        Y *= Value;
+        Z *= Value;
     }
 
-    void operator/=(float Val)
+    inline void operator/=(float Value)
     {
-        X /= Val;
-        Y /= Val;
-        Z /= Val;
+        float Inversed = 1.f / CHECK_NOT_ZERO(Value, "FVector3::Division_by_zero.");
+        X *= Inversed;
+        Y *= Inversed;
+        Z *= Inversed;
     }
 
-    float Len()
+    inline float operator*(FVector3& Value)
+    {
+        return X * Value.X + Y * Value.Y + Z * Value.Z;
+    }
+
+    inline float Len()
     {
         return std::sqrt(X * X + Y * Y + Z * Z);
     }
 
-    float Len2()
+    inline float Len2()
     {
         return X * X + Y * Y + Z * Z;
     }
 
-    FVector3 GetNormal()
+    inline FVector3 GetNormal()
     {
-        auto Length = Len();
-        return {X /= Length, Y /= Length,Z /= Length};
+        auto InversedLength = 1.f / CHECK_NOT_ZERO(Len(), "FVector3::Length_is_zero.");
+        return {X *= InversedLength, Y *= InversedLength,Z *= InversedLength};
     }
 
-    void Normalize()
+    inline void Normalize()
     {
-        auto Length = Len();
-        X /= Length;
-        Y /= Length;
-        Z /= Length;
+        auto InversedLength = 1.f / CHECK_NOT_ZERO(Len(), "FVector3::Length_is_zero.");
+        X *= InversedLength;
+        Y *= InversedLength;
+        Z *= InversedLength;
     }
 };
+
+inline std::ostream& operator<<(std::ostream& OutputStream, const FVector3& Vec)
+{
+    OutputStream << "X: " << Vec.X << " Y: " << Vec.Y << " Z: " << Vec.Z << std::endl;
+    return OutputStream;
+}
 
 using Direction3 = FVector3;
