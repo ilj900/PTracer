@@ -5,6 +5,9 @@
 #include "timing.h"
 #include "draw_manager.h"
 
+#include "matrix2.h"
+#include "matrix4.h"
+
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
@@ -22,6 +25,14 @@ static void KeyCallback(GLFWwindow* Window, int Key, int Scancode, int Action, i
 
 int main()
 {
+    FMatrix4 Mat(4.f, 3.f, 2.f, 2.f,
+                 0.f, 1.f, -3.f, 3.f,
+                 0.f, -1.f, 3.f, 3.f,
+                 0.f, 3.f, 1.f, 1.f);
+    std::cout << Mat << std::endl;
+    FMatrix4 Inversed = Mat.GetInversed();
+    std::cout << Mat << std::endl;
+    std::cout <<Inversed;
     Timer tm;
     static const std::uint32_t Width = 1920;
     static const std::uint32_t Height = 1080;

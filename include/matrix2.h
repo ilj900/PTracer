@@ -3,13 +3,19 @@
 #include "utils.h"
 
 #include <stdexcept>
+#include <iostream>
+#include <iomanip>
 
 class FMatrix2
 {
 public:
-    FMatrix2() : Data{0.f, 0.f, 0.f, 0.f} {};
-    FMatrix2(float M00, float M01, float M10, float M11) : Data{M00, M01, M10, M11} {};
-    FMatrix2(const FMatrix2& Mat) : Data{Mat.M00, Mat.M01, Mat.M10, Mat.M11} {};
+    FMatrix2() : Data{0.f, 0.f,
+                      0.f, 0.f} {};
+    FMatrix2(float M00, float M01,
+             float M10, float M11) : Data{M00, M01,
+                                          M10, M11} {};
+    FMatrix2(const FMatrix2& Mat) : Data{Mat.M00, Mat.M01,
+                                         Mat.M10, Mat.M11} {};
     ~FMatrix2() = default;
 public:
     union {
@@ -20,12 +26,14 @@ public:
 public:
     FMatrix2 operator+(FMatrix2& Mat)
     {
-        return FMatrix2{M00 + Mat.M00, M01 + Mat.M01, M10 + Mat.M10, M11 + Mat.M11};
+        return FMatrix2{M00 + Mat.M00, M01 + Mat.M01,
+                        M10 + Mat.M10, M11 + Mat.M11};
     }
 
     FMatrix2 operator-(FMatrix2& Mat)
     {
-        return FMatrix2{M00 - Mat.M00, M01 - Mat.M01, M10 - Mat.M10, M11 - Mat.M11};
+        return FMatrix2{M00 - Mat.M00, M01 - Mat.M01,
+                        M10 - Mat.M10, M11 - Mat.M11};
     }
 
     void operator+=(const FMatrix2& Mat)
@@ -46,13 +54,15 @@ public:
 
     FMatrix2 operator*(float Value)
     {
-        return FMatrix2{M00 * Value, M01 * Value, M10 * Value, M11 * Value};
+        return FMatrix2{M00 * Value, M01 * Value,
+                        M10 * Value, M11 * Value};
     }
 
     FMatrix2 operator/(float Value)
     {
         float Inversed = 1.f / CHECK_NOT_ZERO(Value, "FMatrix2::Division_by_zero.");
-        return FMatrix2{M00 * Inversed, M01 * Inversed, M10 * Inversed, M11 * Inversed};
+        return FMatrix2{M00 * Inversed, M01 * Inversed,
+                        M10 * Inversed, M11 * Inversed};
     }
 
     void operator*=(float Value)
@@ -74,7 +84,8 @@ public:
 
     FMatrix2 operator*(FMatrix2& Mat)
     {
-        return FMatrix2{M00 * Mat.M00 + M01 * Mat.M10, M00 * Mat.M10 + M10 * Mat.M11, M00 * Mat.M10 + M01 * Mat.M10, M10 * Mat.M01 + M11 * Mat.M11};
+        return FMatrix2{M00 * Mat.M00 + M01 * Mat.M10, M00 * Mat.M10 + M10 * Mat.M11,
+                        M00 * Mat.M10 + M01 * Mat.M10, M10 * Mat.M01 + M11 * Mat.M11};
     }
 
     float GetDeterminant()
@@ -105,4 +116,19 @@ public:
             M11 *= InversedD;
         }
     }
+
+    inline FMatrix2 GetInversed()
+    {
+        auto InversedD = 1.f / CHECK_NOT_ZERO(GetDeterminant(), "Determinant_is_zero.");
+        return FMatrix2(M11 * InversedD, -M10 * InversedD,
+                        -M01 * InversedD, M00 * InversedD);
+    }
 };
+
+inline std::ostream& operator<<(std::ostream& OutputStream, const FMatrix2& Matrix)
+{
+    OutputStream << std::setprecision(5) << std::right;
+    OutputStream << std::setw(5) << Matrix.M00 << " " << std::setw(5) << Matrix.M01 << std::endl;
+    OutputStream << std::setw(5) << Matrix.M10 << " " << std::setw(5) << Matrix.M11 << std::endl;
+    return OutputStream;
+}
