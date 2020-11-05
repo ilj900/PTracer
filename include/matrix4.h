@@ -156,10 +156,10 @@ public:
     float GetDeterminant()
     {
         return
-          M00 * (M11 * M22 * M33 + M12 * M23 * M31 + M13 * M21 * M32 - M13 * M22 * M31 - M12 * M21 * M33 - M11 * M23 * M32)
-        - M01 * (M10 * M22 * M33 + M12 * M23 * M30 + M13 * M20 * M32 - M13 * M22 * M30 - M12 * M20 * M33 - M10 * M23 * M32)
-        + M02 * (M10 * M21 * M33 + M11 * M23 * M30 + M13 * M20 * M31 - M13 * M21 * M30 - M11 * M20 * M33 - M10 * M23 * M31)
-        - M03 * (M10 * M21 * M32 + M11 * M22 * M30 + M12 * M20 * M31 - M12 * M21 * M30 - M11 * M20 * M32 - M10 * M22 * M31);
+          M00 * (M11 * (M22 * M33 - M23 * M32) + M12 * (M23 * M31 - M21 * M33) + M13 * (M21 * M32 - M22 * M31))
+        - M01 * (M10 * (M22 * M33 - M23 * M32) + M12 * (M23 * M30 - M20 * M33) + M13 * (M20 * M32 - M22 * M30))
+        + M02 * (M10 * (M21 * M33 - M23 * M31) + M11 * (M23 * M30 - M20 * M33) + M13 * (M20 * M31 - M21 * M30))
+        - M03 * (M10 * (M21 * M32 - M22 * M31) + M11 * (M22 * M30 - M20 * M32) + M12 * (M20 * M31 - M21 * M30));
     }
 
     void Transpose()
@@ -196,25 +196,62 @@ public:
     {
         auto InversedD = 1.f / CHECK_NOT_ZERO(GetDeterminant(), "Determinant_is_zero.");
         {
-            float M0000 = M01 * M10 + M02 * M20 + M03 * M30;
-            float M0100 = M00 * M11 + M02 * M21 + M03 * M31;
-            float M0200 = M00 * M12 + M01 * M22 + M03 * M32;
-            float M0300 = M00 * M13 + M01 * M23 + M02 * M33;
+            float M11M22 = M11 * M22;
+            float M12M23 = M12 * M23;
+            float M13M21 = M13 * M21;
+            float M11M23 = M11 * M23;
+            float M12M21 = M12 * M21;
+            float M13M22 = M13 * M22;
+            float M10M23 = M10 * M23;
+            float M12M20 = M12 * M20;
+            float M10M22 = M10 * M22;
+            float M13M20 = M13 * M20;
+            float M10M21 = M10 * M21;
+            float M11M20 = M11 * M20;
+            float M0000 = M11M22 * M33 + M12M23 * M31 + M13M21 * M32 - M11M23 * M32 - M12M21 * M33 - M13M22 * M31;
+            float M0001 = M10M23 * M32 + M12M20 * M33 + M13M22 * M30 - M10M22 * M33 - M12M23 * M30 - M13M20 * M32;
+            float M0002 = M10M21 * M33 + M11M23 * M30 + M13M20 * M31 - M10M23 * M31 - M11M20 * M33 - M13M21 * M30;
+            float M0003 = M10M22 * M31 + M11M20 * M32 + M12M21 * M30 - M10M21 * M32 - M11M22 * M30 - M12M20 * M31;
 
-            float M0001 = M11 * M00 + M12 * M20 + M13 * M30;
-            float M0101 = M10 * M01 + M12 * M21 + M13 * M31;
-            float M0201 = M10 * M02 + M11 * M22 + M13 * M32;
-            float M0301 = M10 * M03 + M11 * M23 + M12 * M33;
+            float M0300 = M01 * M13M22 + M02 * M11M23 + M03 * M12M21 - M01 * M12M23 - M02 * M13M21 - M03 * M11M22;
+            float M0301 = M00 * M12M23 + M02 * M13M20 + M03 * M10M22 - M00 * M13M22 - M02 * M10M22 - M03 * M12M20;
+            float M0302 = M00 * M13M21 + M01 * M10M23 + M03 * M11M20 - M00 * M11M23 - M01 * M13M20 - M03 * M10M21;
+            float M0303 = M00 * M11M22 + M01 * M12M20 + M02 * M10M21 - M00 * M12M21 - M01 * M10M22 - M02 * M11M20;
 
-            float M0002 = M21 * M00 + M22 * M10 + M23 * M30;
-            float M0102 = M20 * M01 + M22 * M11 + M23 * M31;
-            float M0202 = M20 * M02 + M21 * M12 + M23 * M32;
-            float M0302 = M20 * M03 + M21 * M13 + M22 * M33;
+            float M01M23 = M01 * M23;
+            float M21M23 = M21 * M33;
+            float M03M22 = M03 * M22;
+            float M01M22 = M01 * M22;
+            float M02M23 = M02 * M23;
+            float M03M21 = M03 * M21;
+            float M00M22 = M00 * M22;
+            float M03M20 = M03 * M20;
+            float M00M23 = M00 * M23;
+            float M02M20 = M02 * M20;
+            float M01M20 = M01 * M20;
+            float M00M21 = M00 * M21;
+            float M02M21 = M02 * M21;
+            float M0100 = M01M23 * M32 + M02 * M21M23 + M03M22 * M31 - M01M22 * M33 - M02M23 * M31 - M03M21 * M32;
+            float M0101 = M00M22 * M33 + M02M23 * M30 + M03M20 * M32 - M00M23 * M32 - M02M20 * M33 - M03M22 * M30;
+            float M0102 = M00M23 * M31 + M01M20 * M33 + M03M21 * M30 - M00 * M21M23 - M01M23 * M30 - M03M20 * M31;
+            float M0103 = M00M21 * M32 + M01M22 * M30 + M02M20 * M31 - M00M22 * M31 - M01M20 * M32 - M02M21 * M30;
 
-            float M0003 = M31 * M00 + M32 * M10 + M33 * M20;
-            float M0103 = M30 * M01 + M32 * M11 + M33 * M21;
-            float M0203 = M30 * M02 + M31 * M12 + M33 * M22;
-            float M0303 = M30 * M03 + M31 * M13 + M32 * M23;
+            float M01M12 = M01 * M12;
+            float M02M13 = M02 * M13;
+            float M03M11 = M03 * M11;
+            float M01M13 = M01 * M13;
+            float M02M11 = M02 * M11;
+            float M03M12 = M03 * M12;
+            float M00M13 = M00 * M13;
+            float M02M10 = M02 * M10;
+            float M00M12 = M00 * M12;
+            float M03M10 = M03 * M10;
+            float M00M11 = M00 * M11;
+            float M01M10 = M01 * M10;
+            float M0200 = M01M12 * M33 + M02M13 * M31 + M03M11 * M32 - M01M13 * M32 - M02M11 * M33 - M03M12 * M31;
+            float M0201 = M00M13 * M32 + M02M10 * M33 + M03M12 * M30 - M00M12 * M33 - M02M13 * M30 - M03M10 * M32;
+            float M0202 = M00M11 * M33 + M01M13 * M30 + M03M10 * M31 - M00M13 * M31 - M01M10 * M33 - M03M11 * M30;
+            float M0203 = M00M12 * M31 + M01M10 * M32 + M02M11 * M30 - M00M11 * M32 - M01M12 * M30 - M02M10 * M32;
 
             M00 = M0000 * InversedD;
             M01 = M0100 * InversedD;
@@ -239,25 +276,62 @@ public:
     {
         auto InversedD = 1.f / CHECK_NOT_ZERO(GetDeterminant(), "Determinant_is_zero.");
         {
-            float M0000 = M11 * M22 * M33 + M12 * M23 * M31 + M13 * M21 * M32 - M11 * M23 * M32 - M12 * M21 * M33 - M13 * M22 * M31;
-            float M0001 = M10 * M23 * M32 + M12 * M20 * M33 + M13 * M22 * M30 - M10 * M22 * M33 - M12 * M23 * M30 - M13 * M20 * M32;
-            float M0002 = M10 * M21 * M33 + M11 * M23 * M30 + M13 * M20 * M31 - M10 * M23 * M31 - M11 * M20 * M33 - M13 * M21 * M30;
-            float M0003 = M10 * M22 * M31 + M11 * M20 * M32 + M12 * M21 * M30 - M10 * M21 * M32 - M11 * M22 * M30 - M12 * M20 * M31;
+            float M11M22 = M11 * M22;
+            float M12M23 = M12 * M23;
+            float M13M21 = M13 * M21;
+            float M11M23 = M11 * M23;
+            float M12M21 = M12 * M21;
+            float M13M22 = M13 * M22;
+            float M10M23 = M10 * M23;
+            float M12M20 = M12 * M20;
+            float M10M22 = M10 * M22;
+            float M13M20 = M13 * M20;
+            float M10M21 = M10 * M21;
+            float M11M20 = M11 * M20;
+            float M0000 = M11M22 * M33 + M12M23 * M31 + M13M21 * M32 - M11M23 * M32 - M12M21 * M33 - M13M22 * M31;
+            float M0001 = M10M23 * M32 + M12M20 * M33 + M13M22 * M30 - M10M22 * M33 - M12M23 * M30 - M13M20 * M32;
+            float M0002 = M10M21 * M33 + M11M23 * M30 + M13M20 * M31 - M10M23 * M31 - M11M20 * M33 - M13M21 * M30;
+            float M0003 = M10M22 * M31 + M11M20 * M32 + M12M21 * M30 - M10M21 * M32 - M11M22 * M30 - M12M20 * M31;
 
-            float M0100 = M01 * M23 * M32 + M02 * M21 * M33 + M03 * M22 * M31 - M01 * M22 * M33 - M02 * M23 * M31 - M03 * M21 * M32;
-            float M0101 = M00 * M22 * M33 + M02 * M23 * M30 + M03 * M20 * M32 - M00 * M23 * M32 - M02 * M20 * M33 - M03 * M22 * M30;
-            float M0102 = M00 * M23 * M31 + M01 * M20 * M33 + M03 * M21 * M30 - M00 * M21 * M33 - M01 * M23 * M30 - M03 * M20 * M31;
-            float M0103 = M00 * M21 * M32 + M01 * M22 * M30 + M02 * M20 * M31 - M00 * M22 * M31 - M01 * M20 * M32 - M02 * M21 * M30;
+            float M0300 = M01 * M13M22 + M02 * M11M23 + M03 * M12M21 - M01 * M12M23 - M02 * M13M21 - M03 * M11M22;
+            float M0301 = M00 * M12M23 + M02 * M13M20 + M03 * M10M22 - M00 * M13M22 - M02 * M10M22 - M03 * M12M20;
+            float M0302 = M00 * M13M21 + M01 * M10M23 + M03 * M11M20 - M00 * M11M23 - M01 * M13M20 - M03 * M10M21;
+            float M0303 = M00 * M11M22 + M01 * M12M20 + M02 * M10M21 - M00 * M12M21 - M01 * M10M22 - M02 * M11M20;
 
-            float M0200 = M01 * M12 * M33 + M02 * M13 * M31 + M03 * M11 * M32 - M01 * M13 * M32 - M02 * M11 * M33 - M03 * M12 * M31;
-            float M0201 = M00 * M13 * M32 + M02 * M10 * M33 + M03 * M12 * M30 - M00 * M12 * M33 - M02 * M13 * M30 - M03 * M10 * M32;
-            float M0202 = M00 * M11 * M33 + M01 * M13 * M30 + M03 * M10 * M31 - M00 * M13 * M31 - M01 * M10 * M33 - M03 * M11 * M30;
-            float M0203 = M00 * M12 * M31 + M01 * M10 * M32 + M02 * M11 * M30 - M00 * M11 * M32 - M01 * M12 * M30 - M02 * M10 * M32;
+            float M01M23 = M01 * M23;
+            float M21M23 = M21 * M33;
+            float M03M22 = M03 * M22;
+            float M01M22 = M01 * M22;
+            float M02M23 = M02 * M23;
+            float M03M21 = M03 * M21;
+            float M00M22 = M00 * M22;
+            float M03M20 = M03 * M20;
+            float M00M23 = M00 * M23;
+            float M02M20 = M02 * M20;
+            float M01M20 = M01 * M20;
+            float M00M21 = M00 * M21;
+            float M02M21 = M02 * M21;
+            float M0100 = M01M23 * M32 + M02 * M21M23 + M03M22 * M31 - M01M22 * M33 - M02M23 * M31 - M03M21 * M32;
+            float M0101 = M00M22 * M33 + M02M23 * M30 + M03M20 * M32 - M00M23 * M32 - M02M20 * M33 - M03M22 * M30;
+            float M0102 = M00M23 * M31 + M01M20 * M33 + M03M21 * M30 - M00 * M21M23 - M01M23 * M30 - M03M20 * M31;
+            float M0103 = M00M21 * M32 + M01M22 * M30 + M02M20 * M31 - M00M22 * M31 - M01M20 * M32 - M02M21 * M30;
 
-            float M0300 = M01 * M13 * M22 + M02 * M11 * M23 + M03 * M12 * M21 - M01 * M12 * M23 - M02 * M13 * M21 - M03 * M11 * M22;
-            float M0301 = M00 * M12 * M23 + M02 * M13 * M20 + M03 * M10 * M22 - M00 * M13 * M22 - M02 * M10 * M22 - M03 * M12 * M20;
-            float M0302 = M00 * M13 * M21 + M01 * M10 * M23 + M03 * M11 * M20 - M00 * M11 * M23 - M01 * M13 * M20 - M03 * M10 * M21;
-            float M0303 = M00 * M11 * M22 + M01 * M12 * M20 + M02 * M10 * M21 - M00 * M12 * M21 - M01 * M10 * M22 - M02 * M11 * M20;
+            float M01M12 = M01 * M12;
+            float M02M13 = M02 * M13;
+            float M03M11 = M03 * M11;
+            float M01M13 = M01 * M13;
+            float M02M11 = M02 * M11;
+            float M03M12 = M03 * M12;
+            float M00M13 = M00 * M13;
+            float M02M10 = M02 * M10;
+            float M00M12 = M00 * M12;
+            float M03M10 = M03 * M10;
+            float M00M11 = M00 * M11;
+            float M01M10 = M01 * M10;
+            float M0200 = M01M12 * M33 + M02M13 * M31 + M03M11 * M32 - M01M13 * M32 - M02M11 * M33 - M03M12 * M31;
+            float M0201 = M00M13 * M32 + M02M10 * M33 + M03M12 * M30 - M00M12 * M33 - M02M13 * M30 - M03M10 * M32;
+            float M0202 = M00M11 * M33 + M01M13 * M30 + M03M10 * M31 - M00M13 * M31 - M01M10 * M33 - M03M11 * M30;
+            float M0203 = M00M12 * M31 + M01M10 * M32 + M02M11 * M30 - M00M11 * M32 - M01M12 * M30 - M02M10 * M32;
 
             return FMatrix4
             {M0000 * InversedD, M0001 * InversedD, M0002 * InversedD, M0003 * InversedD,
