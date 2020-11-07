@@ -4,6 +4,7 @@
 
 class FPointLight : FShape
 {
+public:
     FPointLight() = default;
     ~FPointLight() = default;
 };

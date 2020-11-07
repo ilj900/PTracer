@@ -14,7 +14,7 @@ public:
     FVector2(const FVector2& Vec) : Data{Vec.X, Vec.Y} {};
     ~FVector2() = default;
 
-    std::string ToString() {return "X: " + std::to_string(X) + " Y: " + std::to_string(Y);};
+    std::string ToString() const {return "X: " + std::to_string(X) + " Y: " + std::to_string(Y);};
 
 public:
     union {
@@ -23,27 +23,27 @@ public:
         struct {float U, V;};
     };
 
-    inline FVector2 operator+(const FVector2& Value)
+    inline FVector2 operator+(const FVector2& Value) const
     {
         return FVector2{X + Value.X, Y + Value.Y};
     }
 
-    inline FVector2 operator-(const FVector2& Value)
+    inline FVector2 operator-(const FVector2& Value) const
     {
         return FVector2{X - Value.X, Y - Value.Y};
     }
 
-    inline FVector2 operator-()
+    inline FVector2 operator-() const
     {
         return FVector2(-X, -Y);
     }
 
-    inline FVector2 operator*(float Value)
+    inline FVector2 operator*(float Value) const
     {
         return {X * Value, Y * Value};
     }
 
-    inline FVector2 operator/(float Value)
+    inline FVector2 operator/(float Value) const
     {
         float Inversed = 1.f / CHECK_NOT_ZERO(Value, "FVector2::Division_by_zero.");
         return {X * Inversed, Y * Inversed};
@@ -74,22 +74,22 @@ public:
         Y *= Inversed;
     }
 
-    inline float operator*(const FVector2& Vector)
+    inline float operator*(const FVector2& Vector) const
     {
         return Vector.X * X + Vector.Y * Y;
     }
 
-    inline float Len()
+    inline float Len() const
     {
         return std::sqrt(X * X + Y * Y);
     }
 
-    inline float Len2()
+    inline float Len2() const
     {
         return X * X + Y * Y;
     }
 
-    inline FVector2 Normal()
+    inline FVector2 GetNormalized() const
     {
         auto InversedLength = 1.f / CHECK_NOT_ZERO(Len(), "FVector2::Length_is_zero.");
         return FVector2{X * InversedLength, Y * InversedLength};
@@ -100,6 +100,32 @@ public:
         auto InversedLength = 1.f / CHECK_NOT_ZERO(Len(), "FVector2::Length_is_zero.");
         X *= InversedLength;
         Y *= InversedLength;
+    }
+
+    inline float GetCos(const FVector2& Vector) const
+    {
+        return GetNormalized() * Vector.GetNormalized();
+    }
+
+    inline float GetAngle(const FVector2& Vector) const
+    {
+        return std::acos(GetNormalized() * Vector.GetNormalized());
+    }
+
+    inline FVector2 GetPrjectionOnVector(const FVector2& Vector) const
+    {
+        return Vector * ((Vector * (*this)) / Vector.Len2());
+    }
+
+    inline FVector2 GetPerpendecularToVector(const FVector2& Vector) const
+    {
+        return (*this) - GetPrjectionOnVector(Vector);
+    }
+
+    inline FVector2 Reflect(FVector2 Normal)
+    {
+        auto Perp = GetPerpendecularToVector(Normal);
+        return (*this + (Perp * 2.f));
     }
 };
 

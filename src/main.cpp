@@ -4,6 +4,7 @@
 #include "camera.h"
 #include "timing.h"
 #include "draw_manager.h"
+#include "point_light.h"
 
 #include "matrix2.h"
 #include "matrix4.h"
