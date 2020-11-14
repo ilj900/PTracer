@@ -38,15 +38,9 @@ public:
         return FVector2(-X, -Y);
     }
 
-    inline FVector2 operator*(float Value) const
+    inline float operator*(const FVector2& Vector) const
     {
-        return {X * Value, Y * Value};
-    }
-
-    inline FVector2 operator/(float Value) const
-    {
-        float Inversed = 1.f / CHECK_NOT_ZERO(Value, "FVector2::Division_by_zero.");
-        return {X * Inversed, Y * Inversed};
+        return X * Vector.X + Y * Vector.Y;
     }
 
     inline void operator+=(const FVector2& Value)
@@ -61,6 +55,17 @@ public:
         Y -= Value.Y;
     }
 
+    inline FVector2 operator*(float Value) const
+    {
+        return {X * Value, Y * Value};
+    }
+
+    inline FVector2 operator/(float Value) const
+    {
+        float Inversed = 1.f / CHECK_NOT_ZERO(Value, "FVector2::Division_by_zero.");
+        return {X * Inversed, Y * Inversed};
+    }
+
     inline void operator*=(float Value)
     {
         X *= Value;
@@ -72,11 +77,6 @@ public:
         float Inversed = 1.f / CHECK_NOT_ZERO(Value, "FVector2::Division_by_zero.");
         X *= Inversed;
         Y *= Inversed;
-    }
-
-    inline float operator*(const FVector2& Vector) const
-    {
-        return Vector.X * X + Vector.Y * Y;
     }
 
     inline float Len() const
@@ -95,7 +95,7 @@ public:
         return FVector2{X * InversedLength, Y * InversedLength};
     }
 
-    inline void  Normalize()
+    inline void Normalize()
     {
         auto InversedLength = 1.f / CHECK_NOT_ZERO(Len(), "FVector2::Length_is_zero.");
         X *= InversedLength;
@@ -122,7 +122,24 @@ public:
         return (*this) - GetPrjectionOnVector(Vector);
     }
 
-    inline FVector2 Reflect(FVector2 Normal)
+    inline FVector2 Rotate(float Angle)
+    {
+        float SinAnlge = std::sin(Angle);
+        float CosAngle = std::cos(Angle);
+        return FVector2{X * CosAngle - Y * SinAnlge, X * SinAnlge + Y * CosAngle};
+    }
+
+    inline void SelfRotate(float Angle)
+    {
+        float SinAnlge = std::sin(Angle);
+        float CosAngle = std::cos(Angle);
+        float NewX = X * CosAngle - Y * SinAnlge;
+        float NewY = X * SinAnlge + Y * CosAngle;
+        X = NewX;
+        Y = NewY;
+    }
+
+    inline FVector2 Reflect(const FVector2& Normal)
     {
         auto Perp = GetPerpendecularToVector(Normal);
         return (*this + (Perp * 2.f));

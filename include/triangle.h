@@ -16,7 +16,7 @@ public:
     //FTriangle(FVector3 PositionIn, ColorRGBA AlbedoIn, FVector3 P1, FVector3 P2, FVector3 P3): FShape(PositionIn, AlbedoIn), Points{P1, P2, P3}{};
     ~FTriangle();
 
-    virtual bool Intersect(FRay RayIn, FRay &RayOut) override
+    virtual bool Intersect(FRay RayIn, FRay &RayOut, FVector3& Normal) override
     {
         auto E1 = Points[1] - Points[0];
         auto E2 = Points[2] - Points[0];

@@ -11,7 +11,7 @@ public:
     FSphere(FVector3& PositionIn, ColorRGBA& AlbedoIn, float RadiusIn): FShape(PositionIn, AlbedoIn), Radius(RadiusIn) {};
     ~FSphere() = default;
 
-    virtual bool Intersect(FRay RayIn, FRay& RayOut) override
+    virtual bool Intersect(FRay RayIn, FRay& RayOut, FVector3& Normal) override
     {
         // Translate Ray into sphere center coordinates
         auto RayOrigin = RayIn.Origin - Position;
@@ -28,10 +28,11 @@ public:
                 {
                     return false;
                 }
-                auto IntersectedRay = RayIn.Origin + RayIn.Direction * X;
-                auto Normal = IntersectedRay - Position;
-                auto ReflectedRayDirection = Reflect(-IntersectedRay, Normal);
-                RayOut = FRay(IntersectedRay, ReflectedRayDirection);
+                auto IntersectionPoint = RayIn.Origin + RayIn.Direction * X;
+                Normal = IntersectionPoint - Position;
+                Normal.Normalize();
+                auto ReflectedRayDirection = Reflect(-RayIn.Direction, Normal);
+                RayOut = FRay(IntersectionPoint, ReflectedRayDirection);
                 return true;
             }
         }

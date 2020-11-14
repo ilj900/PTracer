@@ -3,6 +3,9 @@
 #include <cinttypes>
 #include <stdexcept>
 
+const float kPi = 3.14159265358979323846f; // 180 Degrees
+const float kPi2 = kPi * 0.5f;  // 90 Degrees
+
 struct ColorRGB
 {
     std::uint8_t R;

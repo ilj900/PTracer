@@ -14,4 +14,5 @@ public:
 public:
     FVector3 Direction = {1.f, 0.f, 0.f};
     FVector3 Origin = DefaultOrigin;
+    float Eta = 1.f;
 };

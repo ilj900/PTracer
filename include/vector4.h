@@ -2,13 +2,14 @@
 
 #include <iostream>
 #include <string>
+#include "vector3.h"
 
-class TVector4
+class FVector4
 {
 public:
-    TVector4() = default;
-    TVector4(float X, float Y, float Z, float W): Data{X, Y, Z, W} {};
-    ~TVector4() = default;
+    FVector4() = default;
+    FVector4(float X, float Y, float Z, float W): Data{X, Y, Z, W} {};
+    ~FVector4() = default;
 
     std::string GetStringRepresentation() {return "X: " + std::to_string(X) + " Y: " + std::to_string(Y) + "Z: " + std::to_string(Z) + " W: " + std::to_string(W);};
 
@@ -19,27 +20,27 @@ public:
         struct {float R, G, B, A;};
     };
 
-    TVector4 operator+(const TVector4& val)
+    FVector4 operator+(const FVector4& val) const
     {
-        return TVector4{X + val.X, Y + val.Y, Z + val.Z, W + val.W};
+        return FVector4{X + val.X, Y + val.Y, Z + val.Z, W + val.W};
     }
 
-    TVector4 operator-(const TVector4& val)
+    FVector4 operator-(const FVector4& val) const
     {
-        return TVector4{X - val.X, Y - val.Y, Z - val.Z, W - val.W};
+        return FVector4{X - val.X, Y - val.Y, Z - val.Z, W - val.W};
     }
 
-    TVector4 operator*(float val)
+    FVector4 operator*(float val) const
     {
         return {X * val, Y * val, Z * val, W * val};
     }
 
-    TVector4 operator/(float val)
+    FVector4 operator/(float val) const
     {
         return {X / val, Y / val, Z / val, W / val};
     }
 
-    void operator+=(const TVector4& val)
+    void operator+=(const FVector4& val)
     {
         X += val.X;
         Y += val.Y;
@@ -47,7 +48,7 @@ public:
         W += val.W;
     }
 
-    void operator-=(const TVector4& val)
+    void operator-=(const FVector4& val)
     {
         X -= val.X;
         Y -= val.Y;
@@ -70,7 +71,12 @@ public:
         Z /= val;
         W /= val;
     }
+
+    FVector3 GetVector3() const
+    {
+        return {X, Y, Z};
+    }
 };
 
-using Vector4 = TVector4;
-using Direction4 = TVector4;
+using Vector4 = FVector4;
+using Direction4 = FVector4;

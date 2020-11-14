@@ -4,7 +4,7 @@
 #include "camera.h"
 #include "timing.h"
 #include "draw_manager.h"
-#include "point_light.h"
+#include "light.h"
 
 #include "matrix2.h"
 #include "matrix4.h"
@@ -26,28 +26,17 @@ static void KeyCallback(GLFWwindow* Window, int Key, int Scancode, int Action, i
 
 int main()
 {
-    FMatrix4 Mat(4.f, 3.f, 2.f, 2.f,
-                 0.f, 1.f, -3.f, 3.f,
-                 0.f, -1.f, 3.f, 3.f,
-                 0.f, 3.f, 1.f, 1.f);
-    std::cout << Mat << std::endl;
-    FMatrix4 Inversed = Mat.GetInversed();
-    std::cout << Mat << std::endl;
-    std::cout <<Inversed;
     Timer tm;
-    static const std::uint32_t Width = 1920;
-    static const std::uint32_t Height = 1080;
-    static const std::uint32_t NumberOfChannels = 4;
-    static const std::vector<FShape*> Shapes{new FSphere{{4.f, 4.f, 10.f}, {255, 0, 0, 255}, 2.f},
-                                new FSphere{{18.f, 7.f, 12.f}, {0, 128, 192, 255}, 3.f},
-                                new FSphere{{-3.f, 0.f, 25.f}, {0, 255, 0, 255}, 2.f},
-                                new FSphere{{-90.f, -45.f, 120.f}, {255, 0, 128, 255}, 10.f},
-                                new FTriangle{{0.f, 0.f, 10.f}, {255, 255, 0, 255}, {0.f, 3.f, 10.f}, {-3.f, 0.f, 10.f}, {0.f, 0.f, 10.0f}}};
 
+    static const std::uint32_t Width = 480;
+    static const std::uint32_t Height = 270;
+    static const std::uint32_t NumberOfChannels = 4;
+    static const std::vector<FShape*> Shapes{new FSphere{{0.f, 0.f, 20.f}, {255, 0, 0, 255}, 5.f}};
+    static const std::vector<FLight> Lights{{10.f, 0.f, 20.f}};
     UImage Image(Width, Height, {20, 15, 40, 255});
-    FVector3 CameraCenter(0.f, 0.f, -10.f);
+    FVector3 CameraPosition(0.f, 0.f, -10.f);
     FVector3 CameraDirection( 0.f, 0.f, 1.f);
-    Camera Cam(CameraCenter, CameraDirection, 90.f, 100.f, 0.1f, Image);
+    Camera Cam(CameraPosition, CameraDirection, 90.f, 100.f, 0.1f, Image);
 
     {
         Timer tm2;
@@ -57,10 +46,25 @@ int main()
             for (std::uint32_t X = 0; X < Width; ++X)
             {
                 FRay RayOut;
+                FVector3 Normal;
                 FRay Ray = Cam.GenerateRay(X, Y);
                 for (auto item : Shapes) {
-                    if (item->Intersect(Ray, RayOut)) {
-                        Image[Y * Width + X] = item->Albedo;
+                    try {
+                        if (item->Intersect(Ray, RayOut, Normal)) {
+                            auto LightDirection = Lights[0].Position.GetVector3() - RayOut.Origin;
+                            auto Cos = LightDirection.GetCos(Normal);
+                            std::cout<<Cos<<std::endl;
+                            Cos = Cos > 0.f ? Cos : 0.f;
+
+                            float Scale = (0.1f + Cos) / (1.1f);
+                            Image[Y * Width + X] = {std::uint8_t (255.f * Cos),
+                                                    0,
+                                                    0,
+                                                    255};
+                        }
+                    }
+                    catch(...)
+                    {
                     }
                 }
             }
@@ -74,8 +78,8 @@ int main()
             return -1;
 
         glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
-        window = glfwCreateWindow(Image.GetWidth(), Image.GetHeight(), "", NULL, NULL);
-        glfwSetWindowPos(window, 100, 100);
+        window = glfwCreateWindow(3840, 2160, "", NULL, NULL);
+        glfwSetWindowPos(window, 0, 0);
 
         if (!window) {
             glfwTerminate();

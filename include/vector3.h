@@ -23,25 +23,24 @@ public:
         struct {float R, G, B;};
     };
 
-    inline FVector3 operator+(const FVector3& Value)
+    inline FVector3 operator+(const FVector3& Value) const
     {
         return FVector3{X + Value.X, Y + Value.Y, Z + Value.Z};
     }
 
-    inline FVector3 operator-(const FVector3& Value)
+    inline FVector3 operator-(const FVector3& Value) const
     {
         return FVector3{X - Value.X, Y - Value.Y, Z - Value.Z};
     }
 
-    inline FVector3 operator*(float Value)
+    inline FVector3 operator-() const
     {
-        return {X * Value, Y * Value, Z * Value};
+        return FVector3{-X, -Y, -Z};
     }
 
-    inline FVector3 operator/(float Value)
+    inline float operator*(const FVector3& Value) const
     {
-        float Inversed = 1.f / CHECK_NOT_ZERO(Value, "FVector3::Division_by_zero.");
-        return {X * Inversed, Y * Inversed, Z * Inversed};
+        return X * Value.X + Y * Value.Y + Z * Value.Z;
     }
 
     inline void operator+=(const FVector3& Value)
@@ -51,16 +50,22 @@ public:
         Z += Value.Z;
     }
 
-    inline FVector3 operator-()
-    {
-        return {-X, -Y, -Z};
-    }
-
     inline void operator-=(const FVector3& Value)
     {
         X -= Value.X;
         Y -= Value.Y;
         Z -= Value.Z;
+    }
+
+    inline FVector3 operator*(float Value) const
+    {
+        return {X * Value, Y * Value, Z * Value};
+    }
+
+    inline FVector3 operator/(float Value) const
+    {
+        float Inversed = 1.f / CHECK_NOT_ZERO(Value, "FVector3::Division_by_zero.");
+        return {X * Inversed, Y * Inversed, Z * Inversed};
     }
 
     inline void operator*=(float Value)
@@ -78,25 +83,20 @@ public:
         Z *= Inversed;
     }
 
-    inline float operator*(FVector3& Value)
-    {
-        return X * Value.X + Y * Value.Y + Z * Value.Z;
-    }
-
-    inline float Len()
+    inline float Len() const
     {
         return std::sqrt(X * X + Y * Y + Z * Z);
     }
 
-    inline float Len2()
+    inline float Len2() const
     {
         return X * X + Y * Y + Z * Z;
     }
 
-    inline FVector3 GetNormal()
+    inline FVector3 GetNormalized() const
     {
         auto InversedLength = 1.f / CHECK_NOT_ZERO(Len(), "FVector3::Length_is_zero.");
-        return {X *= InversedLength, Y *= InversedLength,Z *= InversedLength};
+        return {X * InversedLength, Y * InversedLength,Z * InversedLength};
     }
 
     inline void Normalize()
@@ -105,6 +105,47 @@ public:
         X *= InversedLength;
         Y *= InversedLength;
         Z *= InversedLength;
+    }
+
+    inline float GetCos(const FVector3& Vector) const
+    {
+        return GetNormalized() * Vector.GetNormalized();
+    }
+
+    inline float GetAngle(const FVector3& Vector) const
+    {
+        return std::acos(GetNormalized() * Vector.GetNormalized());
+    }
+
+    inline FVector3 GetPrjectionOnVector(const FVector3& Vector) const
+    {
+        return Vector * ((Vector * (*this)) / Vector.Len2());
+    }
+
+    inline FVector3 GetPerpendecularToVector(const FVector3& Vector) const
+    {
+        return (*this) - GetPrjectionOnVector(Vector);
+    }
+
+    inline void Rotate(const FVector3& Vector, float Angle)
+    {
+        //Todo
+    }
+
+    inline FVector3 RotateX(float Angle)
+    {
+        auto C = std::cos(Angle);
+        auto S = std::sin(Angle);
+    }
+
+    inline FVector3 RotateY(float Angle)
+    {
+
+    }
+
+    inline FVector3 RotateZ(float Angle)
+    {
+
     }
 };
 
