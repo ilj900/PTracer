@@ -12,6 +12,8 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
+#include "director.h"
+
 #include <cstdint>
 
 static void KeyCallback(GLFWwindow* Window, int Key, int Scancode, int Action, int Mods)
@@ -28,8 +30,10 @@ int main()
 {
     Timer tm;
 
-    static const std::uint32_t Width = 480;
-    static const std::uint32_t Height = 270;
+    TheDirector D;
+
+    static const std::uint32_t Width = 1920;
+    static const std::uint32_t Height = 1080;
     static const std::uint32_t NumberOfChannels = 4;
     static const std::vector<FShape*> Shapes{new FSphere{{0.f, 0.f, 20.f}, {255, 0, 0, 255}, 5.f}};
     static const std::vector<FLight> Lights{{10.f, 0.f, 20.f}};
@@ -53,7 +57,6 @@ int main()
                         if (item->Intersect(Ray, RayOut, Normal)) {
                             auto LightDirection = Lights[0].Position.GetVector3() - RayOut.Origin;
                             auto Cos = LightDirection.GetCos(Normal);
-                            std::cout<<Cos<<std::endl;
                             Cos = Cos > 0.f ? Cos : 0.f;
 
                             float Scale = (0.1f + Cos) / (1.1f);
